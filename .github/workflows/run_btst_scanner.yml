@@ -1,0 +1,35 @@
+name: BTST Scanner Script (3:15 PM IST)
+
+on:
+  schedule:
+    - cron: '45 9 * * *'  # 09:45 UTC = 03:15 PM IST
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-btst:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run BTST Scanner
+        run: python btst_scanner.py
+
+      - name: Commit and Push Output File
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add *.xlsx
+          git commit -m "Auto-updated BTST Live Calls [skip ci]" || echo "No changes to commit"
+          git push
