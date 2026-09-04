@@ -33,3 +33,24 @@ jobs:
           git add *.xlsx
           git commit -m "Auto-generated NSE Losers Report [skip ci]" || echo "No changes to commit"
           git push
+
+      - name: Send Email with Excel Attachment
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "📉 Daily NSE F&O Top Losers Report"
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: GitHub Actions Scanner
+          body: |
+            Hello,
+
+            The NSE Top Losers script execution has completed.
+            Please find the newly generated Excel report attached.
+
+            Regards,
+            Automated Bot
+          attachments: "*.xlsx"
