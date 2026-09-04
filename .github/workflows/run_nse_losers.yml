@@ -1,8 +1,8 @@
-name: NSE FnO Losers Script (9:17 AM IST)
+name: NSE FnO Losers Script (9:16 AM IST)
 
 on:
   schedule:
-    - cron: '47 3 * * *'  # 03:47 UTC = 09:17 AM IST
+    - cron: '46 3 * * *'  # 03:46 UTC = 09:16 AM IST
   workflow_dispatch:
 
 permissions:
@@ -43,7 +43,7 @@ jobs:
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: "📉 Daily NSE F&O Top Losers Report"
-          to: ${{ secrets.MAIL_USERNAME }}
+          to: ${{ secrets.MAIL_USERNAME }}, ${{ secrets.SECOND_MAIL }}
           from: GitHub Actions Scanner
           body: |
             Hello,
