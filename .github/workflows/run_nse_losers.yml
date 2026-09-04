@@ -2,7 +2,7 @@ name: NSE FnO Losers Script (9:16 AM IST)
 
 on:
   schedule:
-    - cron: '46 3 * * *'  # 03:46 UTC = 09:16 AM IST
+    - cron: '46 3 * * 1-5'  # 03:46 UTC = 09:16 AM IST (Mon-Fri only)
   workflow_dispatch:
 
 permissions:
@@ -26,12 +26,17 @@ jobs:
       - name: Run NSE Losers Script
         run: python nse_fno_losers_to_excel.py
 
+      - name: Organize Files into Reports Directory
+        run: |
+          mkdir -p reports
+          mv -f NSE_FnO_*.xlsx reports/ 2>/dev/null || true
+
       - name: Commit and Push Output File
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add *.xlsx
-          git commit -m "Auto-generated NSE Losers Report [skip ci]" || echo "No changes to commit"
+          git add reports/
+          git commit -m "Auto-generated NSE Losers Report in reports [skip ci]" || echo "No changes to commit"
           git push
 
       - name: Send Email with Excel Attachment
@@ -53,4 +58,4 @@ jobs:
 
             Regards,
             Automated Bot
-          attachments: "*.xlsx"
+          attachments: reports/*.xlsx
