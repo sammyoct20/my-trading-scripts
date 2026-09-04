@@ -2,7 +2,7 @@ name: BTST Scanner Script (3:15 PM IST)
 
 on:
   schedule:
-    - cron: '45 9 * * *'  # 09:45 UTC = 03:15 PM IST
+    - cron: '45 9 * * 1-5'  # 09:45 UTC = 03:15 PM IST (Mon-Fri only)
   workflow_dispatch:
 
 permissions:
@@ -26,12 +26,17 @@ jobs:
       - name: Run BTST Scanner
         run: python btst_scanner.py
 
+      - name: Organize Files into Reports Directory
+        run: |
+          mkdir -p reports
+          mv -f btst_live_calls.xlsx reports/ 2>/dev/null || true
+
       - name: Commit and Push Output File
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add *.xlsx
-          git commit -m "Auto-updated BTST Live Calls [skip ci]" || echo "No changes to commit"
+          git add reports/
+          git commit -m "Auto-updated BTST Live Calls in reports [skip ci]" || echo "No changes to commit"
           git push
 
       - name: Send Email with Excel Attachment
@@ -54,4 +59,4 @@ jobs:
 
             Regards,
             Automated Bot
-          attachments: btst_live_calls.xlsx
+          attachments: reports/btst_live_calls.xlsx
