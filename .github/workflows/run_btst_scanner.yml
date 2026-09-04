@@ -33,3 +33,25 @@ jobs:
           git add *.xlsx
           git commit -m "Auto-updated BTST Live Calls [skip ci]" || echo "No changes to commit"
           git push
+
+      - name: Send Email with Excel Attachment
+        if: always() # Sends email even if no new calls were added
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "📊 Daily BTST Scanner Results - Live Calls"
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: GitHub Actions Scanner
+          body: |
+            Hello,
+
+            The BTST Scanner run has completed successfully.
+            Please find the updated Excel report attached.
+
+            Regards,
+            Automated Bot
+          attachments: btst_live_calls.xlsx
