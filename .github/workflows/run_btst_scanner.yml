@@ -35,7 +35,7 @@ jobs:
           git push
 
       - name: Send Email with Excel Attachment
-        if: always() # Sends email even if no new calls were added
+        if: always()
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: "📊 Daily BTST Scanner Results - Live Calls"
-          to: ${{ secrets.MAIL_USERNAME }}
+          to: ${{ secrets.MAIL_USERNAME }}, ${{ secrets.SECOND_MAIL }}
           from: GitHub Actions Scanner
           body: |
             Hello,
