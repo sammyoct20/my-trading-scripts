@@ -36,6 +36,6 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: "BTST Live Calls Report"
           body: "Please find attached the BTST Live Calls Report."
-          to: ${{ secrets.MAIL_USERNAME }}
+          to: ${{ secrets.MAIL_USERNAME }},${{ secrets.SECOND_MAIL }}
           from: ${{ secrets.MAIL_USERNAME }}
           attachments: reports/btst_live_calls.xlsx
