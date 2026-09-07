@@ -24,7 +24,9 @@ jobs:
           pip install -r requirements.txt
 
       - name: Clean Reports Directory
-        run: rm -rf reports/*
+        run: |
+          mkdir -p reports
+          rm -f reports/*
 
       - name: Execute NSE FnO Losers Script
         run: python nse_fno_losers_to_excel.py
@@ -35,10 +37,10 @@ jobs:
           server_address: smtp.gmail.com
           server_port: 465
           secure: true
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
           subject: "NSE FnO Top Losers Report"
           body: "Please find attached the NSE FnO Top Losers Report."
-          to: ${{ secrets.EMAIL_RECIPIENT }}
-          from: ${{ secrets.EMAIL_USERNAME }}
+          to: ${{ secrets.MAIL_USERNAME }}
+          from: ${{ secrets.MAIL_USERNAME }}
           attachments: reports/NSE_FnO_Top_Losers_*.xlsx
