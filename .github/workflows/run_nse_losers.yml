@@ -2,8 +2,8 @@ name: Run NSE FnO Top Losers
 
 on:
   schedule:
-    # 9:17 AM IST = 03:47 AM UTC (Mon-Fri)
-    - cron: '47 3 * * 1-5'
+    # 9:15 AM IST = 03:45 AM UTC (Mon-Fri)
+    - cron: '45 3 * * 1-5'
   workflow_dispatch:
 
 jobs:
@@ -43,6 +43,6 @@ jobs:
           password: ${{ secrets.MAIL_PASSWORD }}
           subject: "NSE FnO Top Losers Report"
           body: "Please find attached the NSE FnO Top Losers Report."
-          to: ${{ secrets.MAIL_USERNAME }}
+          to: ${{ secrets.MAIL_USERNAME }},${{ secrets.SECOND_MAIL }}
           from: ${{ secrets.MAIL_USERNAME }}
           attachments: ${{ env.REPORT_FILE }}
