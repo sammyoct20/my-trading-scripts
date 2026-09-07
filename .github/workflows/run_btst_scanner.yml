@@ -1,62 +1,44 @@
-name: BTST Scanner Script (3:15 PM IST)
+name: Run BTST Scanner
 
 on:
   schedule:
-    - cron: '45 9 * * 1-5'  # 09:45 UTC = 03:15 PM IST (Mon-Fri only)
+    # 3:15 PM IST = 09:45 AM UTC (Mon-Fri)
+    - cron: '45 9 * * 1-5'
   workflow_dispatch:
-
-permissions:
-  contents: write
 
 jobs:
   run-btst:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Run BTST Scanner
+      - name: Clean Reports Directory
+        run: rm -rf reports/*
+
+      - name: Execute BTST Scanner Script
         run: python btst_scanner.py
 
-      - name: Organize Files into Reports Directory
-        run: |
-          mkdir -p reports
-          mv -f btst_live_calls.xlsx reports/ 2>/dev/null || true
-
-      - name: Commit and Push Output File
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add reports/
-          git commit -m "Auto-updated BTST Live Calls in reports [skip ci]" || echo "No changes to commit"
-          git push
-
-      - name: Send Email with Excel Attachment
-        if: always()
+      - name: Send Email with BTST Attachment
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
           secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: "📊 Daily BTST Scanner Results - Live Calls"
-          to: ${{ secrets.MAIL_USERNAME }}, ${{ secrets.SECOND_MAIL }}
-          from: GitHub Actions Scanner
-          body: |
-            Hello,
-
-            The BTST Scanner run has completed successfully.
-            Please find the updated Excel report attached.
-
-            Regards,
-            Automated Bot
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "BTST Live Calls Report"
+          body: "Please find attached the BTST Live Calls Report."
+          to: ${{ secrets.EMAIL_RECIPIENT }}
+          from: ${{ secrets.EMAIL_USERNAME }}
           attachments: reports/btst_live_calls.xlsx
