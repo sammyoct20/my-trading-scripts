@@ -23,13 +23,15 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Clean Reports Directory
-        run: |
-          mkdir -p reports
-          rm -f reports/*
-
       - name: Execute NSE FnO Losers Script
         run: python nse_fno_losers_to_excel.py
+
+      - name: Locate Generated Report File
+        id: find_report
+        run: |
+          LATEST_FILE=$(ls -t reports/NSE_FnO_Top_Losers_*.xlsx | head -n 1)
+          echo "REPORT_FILE=$LATEST_FILE" >> $GITHUB_ENV
+          echo "Found report file: $LATEST_FILE"
 
       - name: Send Email with NSE Losers Attachment
         uses: dawidd6/action-send-mail@v3
@@ -43,4 +45,4 @@ jobs:
           body: "Please find attached the NSE FnO Top Losers Report."
           to: ${{ secrets.MAIL_USERNAME }}
           from: ${{ secrets.MAIL_USERNAME }}
-          attachments: reports/NSE_FnO_Top_Losers_*.xlsx
+          attachments: ${{ env.REPORT_FILE }}
